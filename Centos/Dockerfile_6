@@ -1,0 +1,13 @@
+FROM centos:6
+
+MAINTAINER kissofjudase23@gmail.com
+
+RUN yum -y update
+RUN yum -y install epel-release-6
+RUN yum -y install gcc-c++
+RUN yum -y install util-linux-ng
+RUN yum -y install python-setuptools
+
+RUN easy_install pip
+
+
