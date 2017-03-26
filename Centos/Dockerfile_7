@@ -9,6 +9,7 @@ RUN yum -y install python34-setuptools
 
 RUN easy_install-3.4 pip
 RUN pip3.4 install numpy
+RUN pip3.4 install nose
 RUN pip3.4 install coverage
 
 #for python3.5
@@ -16,5 +17,6 @@ RUN pip3.4 install coverage
 #RUN yum -y install python35u
 #RUN yum -y install python35u-pip
 #RUN pip3.5 install numpy
+#RUN pip3.5 install nose
 #RUN pip3.5 install coverage
 
