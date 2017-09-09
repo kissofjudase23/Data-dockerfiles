@@ -3,20 +3,25 @@ FROM centos:7
 MAINTAINER kissofjudase23@gmail.com
 
 RUN yum -y update
+
 RUN yum -y install epel-release-7
 
 RUN yum -y install python34-setuptools
 
 RUN easy_install-3.4 pip
-RUN pip3.4 install numpy
-RUN pip3.4 install nose
-RUN pip3.4 install coverage
 
-#for python3.5
-#RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
-#RUN yum -y install python35u
-#RUN yum -y install python35u-pip
-#RUN pip3.5 install numpy
-#RUN pip3.5 install nose
-#RUN pip3.5 install coverage
+RUN pip3.4 install \
+    coverage \
+    nose \
+    numpy 
+
+# for python3.5
+#RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
+#    python35u \
+#    python35u-pip
+
+#RUN pip3.5 install \
+#    coverage \
+#    nose \
+#    numpy
 
