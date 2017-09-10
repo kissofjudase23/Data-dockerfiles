@@ -2,9 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER kissofjudase23@gmail.com
 
-RUN apt-get -y update
-
-RUN apt-get install -y \
+RUN apt-get update -y && apt-get install -y \
     python3.5 \
     python3-pip
 

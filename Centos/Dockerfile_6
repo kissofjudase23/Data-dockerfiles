@@ -2,15 +2,12 @@ FROM centos:6
 
 MAINTAINER kissofjudase23@gmail.com
 
-RUN yum -y update
-
-RUN yum -y install epel-release-6
-
-RUN yum install -y \
+RUN yum update -y && yum install -y \
+    epel-release-6 \
     gcc-c++ \
-    util-linux-ng
+    python-setuptools \
+    util-linux-ng 
 
-RUN yum install -y python-setuptools
 RUN easy_install pip
 
 RUN pip install pip==9.0.1 \
