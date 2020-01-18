@@ -1,0 +1,12 @@
+FROM ubuntu:18.04
+
+LABEL author="kissofjudase23@gmail.com"
+
+RUN apt-get update -y && apt-get install -y \
+     python3.6 \
+     python3-pip
+
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["/bin/bash"]
+
+

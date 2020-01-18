@@ -1,12 +1,12 @@
 FROM centos:6
 
-MAINTAINER kissofjudase23@gmail.com
+LABEL author="kissofjudase23@gmail.com"
 
 RUN yum update -y && yum install -y \
     epel-release-6 \
     gcc-c++ \
     python-setuptools \
-    util-linux-ng 
+    util-linux-ng
 
 RUN easy_install pip
 

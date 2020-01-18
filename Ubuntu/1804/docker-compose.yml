@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  library:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    image: ubuntu:1804_test
+    container_name: ubuntu_1804_test
+    restart: "no"
+    tty: true

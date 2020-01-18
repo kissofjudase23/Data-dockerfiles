@@ -1,15 +1,11 @@
 FROM ubuntu:16.04
 
-MAINTAINER kissofjudase23@gmail.com
+LABEL author="kissofjudase23@gmail.com"
 
 RUN apt-get update -y && apt-get install -y \
     python3.5 \
     python3-pip
 
-RUN pip3 install pip==9.0.1 \
-    coverage \
-    nose \
-    numpy
 
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/bin/bash"]
