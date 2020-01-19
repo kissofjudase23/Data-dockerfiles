@@ -4,7 +4,8 @@ LABEL author="kissofjudase23@gmail.com"
 
 RUN apt-get update -y && apt-get install -y \
      python3.6 \
-     python3-pip
+     python3-pip \
+     systemd
 
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/bin/bash"]
