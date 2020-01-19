@@ -1,5 +1,5 @@
 
-container_name = ubuntu1804_test
+container_name = centos8_test
 
 .PHONY: up
 up:

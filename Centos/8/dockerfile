@@ -1,0 +1,11 @@
+FROM centos:8
+
+LABEL author="kissofjudase23@gmail.com"
+
+RUN dnf update -y && dnf install -y \
+    python36
+
+
+
+
+

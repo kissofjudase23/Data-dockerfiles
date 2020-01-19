@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile
-    image: ubuntu:1804_test
-    container_name: ubuntu1804_test
+    image: centos:8
+    container_name: centos8_test
     restart: "no"
     tty: true
