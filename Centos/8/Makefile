@@ -1,9 +1,9 @@
 
-container_name = centos8_test
+container_name = centos8_dev
 
 .PHONY: up
 up:
-	docker-compose up -d --build
+	docker-compose -p $(container_name) up -d --build
 
 .PHONY: down
 down:
@@ -12,4 +12,3 @@ down:
 .PHONY: tty
 tty:
 	docker exec -it $(container_name) /bin/bash
-

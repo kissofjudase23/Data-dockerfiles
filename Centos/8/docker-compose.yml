@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile
-    image: centos:8
-    container_name: centos8_test
+    image: centos:8_dev
+    container_name: centos8_dev
     restart: "no"
     tty: true

@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile
-    image: ubuntu:1804_test
-    container_name: ubuntu1804_test
+    image: ubuntu:18.04_dev
+    container_name: ubuntu1804_env
     restart: "no"
     tty: true
