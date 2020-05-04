@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  prom:
+    image: prom/prometheus
+    container_name: prom
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+    - target: 9090
+      published: 9090
+      protocol: tcp
+    tty: true
+    restart: "no"
+    networks:
+     - prom-network
+
+networks:
+  prom-network:
+    driver: bridge
+    name: prom
