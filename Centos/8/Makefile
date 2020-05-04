@@ -12,3 +12,7 @@ down:
 .PHONY: tty
 tty:
 	docker exec -it $(container_name) /bin/bash
+
+.PHONY: ps
+ps:
+	docker-compose ps
