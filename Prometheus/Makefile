@@ -7,11 +7,11 @@ up:
 
 .PHONY: down
 down:
-	docker-compose down
+	docker-compose -p $(container_name) down
 
 .PHONY: tty
 tty:
-	docker exec -it $(container_name) /bash
+	docker exec -it $(container_name) sh
 
 
 .PHONY: ps
