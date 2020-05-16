@@ -3,7 +3,6 @@ version: "3.7"
 # Ref
 # https://stackoverflow.com/questions/48299505/docker-set-up-mysql-db-environment
 # https://medium.com/better-programming/customize-your-mysql-database-in-docker-723ffd59d8fb
-
 services:
   mysql:
     image: mysql:8
@@ -12,7 +11,7 @@ services:
       - ./sql-scripts:/docker-entrypoint-initdb.d/
     ports:
     - target: 3306
-      published: 33060
+      published: 3306
       protocol: tcp
     tty: true
     environment:
