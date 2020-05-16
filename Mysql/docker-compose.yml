@@ -1,0 +1,30 @@
+version: "3.7"
+
+# Ref
+# https://stackoverflow.com/questions/48299505/docker-set-up-mysql-db-environment
+# https://medium.com/better-programming/customize-your-mysql-database-in-docker-723ffd59d8fb
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    volumes:
+      - ./sql-scripts:/docker-entrypoint-initdb.d/
+    ports:
+    - target: 3306
+      published: 33060
+      protocol: tcp
+    tty: true
+    environment:
+        MYSQL_ROOT_PASSWORD: q
+        MYSQL_DATABASE: company
+        MYSQL_USER: tomlin
+        MYSQL_PASSWORD: q
+    restart: "always"
+    networks:
+     - mysql-network
+
+networks:
+  mysql-network:
+    driver: bridge
+    name: mysql
