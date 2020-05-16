@@ -1,0 +1,25 @@
+version: "3.7"
+
+# Ref
+# https://hub.docker.com/_/redis/
+
+services:
+  redis:
+    image: redis:6
+    container_name: redis
+    #volumes:
+      #- ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+    - target: 6379
+      published: 6379
+      protocol: tcp
+    tty: true
+    restart: "always"
+    networks:
+     - redis-network
+    # command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+
+networks:
+  redis-network:
+    driver: bridge
+    name: redis
