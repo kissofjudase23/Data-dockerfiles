@@ -1,0 +1,48 @@
+
+
+version: '3.7'
+services:
+  test-sqlalchemy:
+    build:
+      context: ./
+      dockerfile: ./dockerfile
+    image: test-sqlalchemy
+    container_name: test-sqlalchemy
+    volumes:
+      - type: bind
+        source: ./
+        target: /tmp/test-salqlchemy
+    working_dir: /tmp/test-salqlchemy
+    restart: "always"
+    environment:
+        DB_HOST: ${DB_HOST}
+        DB_PORT: ${DB_PORT}
+        DB_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS}
+        DB_DATABASE: ${DB_DATABASE}
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
+    tty: true
+    networks:
+      - test-sqlalchemy
+
+  mysql:
+    image: mysql:8
+    container_name: test-sqlalchemy-mysql
+    ports:
+    - target: ${DB_PORT}
+      published: ${DB_PORT}
+      protocol: tcp
+    tty: true
+    environment:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_USER: ${DB_USER}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+    restart: "always"
+    networks:
+      - test-sqlalchemy
+
+networks:
+  test-sqlalchemy:
+    name: test-sqlalchemy
+    driver: bridge
