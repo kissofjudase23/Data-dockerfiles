@@ -36,7 +36,7 @@ class DbEngine(object):
     ENGINE = create_engine(URL,
                            pool_size=DbVars.MAX_CONNECTIONS,
                            encoding="utf8",
-                           echo=False)
+                           echo=True)
 
     _ = BASE.metadata.create_all(bind=ENGINE,
                                  checkfirst=True)
@@ -59,3 +59,8 @@ def transaction_context():
         raise e
     finally:
         DbEngine.SESSION.remove()
+
+
+def create_table():
+    BASE.metadata.create_all(bind=DbEngine.ENGINE,
+                             checkfirst=True)
