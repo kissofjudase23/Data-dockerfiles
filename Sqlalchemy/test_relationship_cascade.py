@@ -20,7 +20,7 @@ class Parent(BASE):
 
     name = Column(VARCHAR(128), unique=True)
 
-    childs = relationship('Child',
+    children = relationship('Child',
                           cascade='all, delete-orphan',
                           passive_deletes=True,
                           back_populates='parent',
@@ -43,10 +43,11 @@ class Child(BASE):
     name = Column(VARCHAR(256), unique=True)
 
     parent = relationship('Parent',
-                          back_populates='childs')
+                          back_populates='children')
 
 
 create_table()
+
 
 def insert_test_data():
     with transaction_context() as session:
@@ -70,15 +71,19 @@ def test_delete_cascade():
 
 def test_select():
     with transaction_context() as session:
-        p1 = session.query(Parent).options(joinedload("childs")).filter(Parent.name == "p1").one_or_none()
+        p1 = session.query(Parent)\
+                    .options(joinedload(Parent.children))\
+                    .filter(Parent.name == "p1")\
+                    .one_or_none()
+
         print(p1.name)
-        for child in p1.childs:
+        for child in p1.children:
             print(child.name)
 
 
 def test():
-    insert_test_data()
-    test_delete_cascade()
+    # insert_test_data()
+    # test_delete_cascade()
     test_select()
 
 
