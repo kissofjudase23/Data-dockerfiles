@@ -1,0 +1,59 @@
+
+
+version: '3.7'
+
+networks:
+  test-gorm:
+    name: test-gorm
+    driver: bridge
+
+volumes:
+  test-gorm-vol:
+
+services:
+  test-gorm:
+    build:
+      context: ./
+      dockerfile: ./dockerfile
+    image: test-gorm
+    container_name: test-gorm
+    volumes:
+      - type: bind
+        source: ./
+        target: /tmp/test-gorm
+    working_dir: /tmp/test-gorm
+    restart: "always"
+    environment:
+        DB_HOST: ${DB_HOST}
+        DB_PORT: ${DB_PORT}
+        DB_MAX_OPEN: ${DB_MAX_OPEN}
+        DB_MAX_IDLE: ${DB_MAX_IDLE}
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+    networks:
+      - test-gorm
+    tty: true
+    logging:
+      driver: json-file
+    command: ["/bin/bash"]
+
+  mysql:
+    image: mysql:8
+    container_name: test-gorm-mysql
+    # can not change interal mysql port 3306
+    ports:
+    - target: ${DB_PORT}
+      published: ${DB_PORT}
+      protocol: tcp
+    tty: true
+    environment:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+        MYSQL_DATABASE: ${DB_NAME}
+        MYSQL_USER: ${DB_USER}
+        MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - test-gorm-vol:/var/lib/mysql
+    restart: "always"
+    networks:
+      - test-gorm

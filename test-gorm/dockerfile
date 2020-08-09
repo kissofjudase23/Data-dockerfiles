@@ -1,0 +1,8 @@
+FROM golang:1.14
+
+ENV GO111MODULE on
+
+
+RUN ["mkdir", "-p", "/app"]
+WORKDIR /app
+CMD ["/bin/bash"]
