@@ -18,17 +18,20 @@ up:
 down:
 	docker-compose -f $(compose_file) -p $(service_name) down
 
+downv:
+	docker-compose -f $(compose_file) -p $(service_name) down --volumes
+
 start:
-	docker-compose -f $(compose_file) -p $(service_name) down
+	docker-compose -f $(compose_file) -p $(service_name) start
 
 restart:
 	docker-compose -f $(compose_file) -p $(service_name) restart
 
 stop:
-	docker-compose -f $(compose_file) -p $(service_name) down
+	docker-compose -f $(compose_file) -p $(service_name) stop
 
 mysql:
 	mysql -h 127.0.0.1 -P ${DB_PORT} -u${DB_ROOT_USER} -p${DB_ROOT_PASSWORD}
 
-tty:
+login:
 	docker exec -it $(service_name) /bin/bash

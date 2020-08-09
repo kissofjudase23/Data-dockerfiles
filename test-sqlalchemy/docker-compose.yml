@@ -1,6 +1,15 @@
 
 
 version: '3.7'
+
+networks:
+  test-sqlalchemy:
+    name: test-sqlalchemy
+    driver: bridge
+
+volumes:
+  test-sqlalchemy-vol:
+
 services:
   test-sqlalchemy:
     build:
@@ -21,15 +30,18 @@ services:
         DB_DATABASE: ${DB_DATABASE}
         DB_USER: ${DB_USER}
         DB_PASSWORD: ${DB_PASSWORD}
-    tty: true
     networks:
       - test-sqlalchemy
+    tty: true
+    logging:
+      driver: json-file
+    command: ["/bin/bash"]
 
   mysql:
     image: mysql:8
     container_name: test-sqlalchemy-mysql
     ports:
-    - target: ${DB_PORT}
+    - target: 3306
       published: ${DB_PORT}
       protocol: tcp
     tty: true
@@ -38,11 +50,8 @@ services:
         MYSQL_DATABASE: ${DB_DATABASE}
         MYSQL_USER: ${DB_USER}
         MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - test-sqlalchemy-vol:/var/lib/mysql
     restart: "always"
     networks:
       - test-sqlalchemy
-
-networks:
-  test-sqlalchemy:
-    name: test-sqlalchemy
-    driver: bridge
