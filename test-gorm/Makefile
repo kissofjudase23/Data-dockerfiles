@@ -38,3 +38,9 @@ mysqlu:
 
 login:
 	docker exec -it $(service_name) /bin/bash
+
+build_go:
+	go build ./test_gorm.go
+
+run_go:
+	go run ./test_gorm.go

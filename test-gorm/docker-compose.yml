@@ -43,7 +43,7 @@ services:
     container_name: test-gorm-mysql
     # can not change interal mysql port 3306
     ports:
-    - target: ${DB_PORT}
+    - target: 3306
       published: ${DB_PORT}
       protocol: tcp
     tty: true
