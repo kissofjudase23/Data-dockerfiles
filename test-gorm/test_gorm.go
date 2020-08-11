@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql" // for gorm
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func getOSEnv(key string) string {
@@ -42,9 +43,9 @@ func ConnectToDB() {
 type User struct {
 	// mysql.interface
 	ID        uint64    `gorm:"column:id;primary_key;auto_increment"`
-	Name      string    `gorm:"column:name;type:varchar(255);not null"`
-	UpdatedAt time.Time `gorm:"column:updated_at;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
-	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP"`
+	Name      string    `gorm:"column:name;type:varchar(255);unique;not null"`
+	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
+	CreatedAt time.Time `gorm:"column:created_at;type:datetime default CURRENT_TIMESTAMP"`
 }
 
 // TableName : Specify the User table name
@@ -61,30 +62,41 @@ func connectDB() *gorm.DB {
 	maxIdle := getOSEnvInt("DB_MAX_IDLE")
 	maxOpen := getOSEnvInt("DB_MAX_OPEN")
 
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", user, pass, host, port, dbName)
-
-	db, err := gorm.Open("mysql", connStr)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", user, pass, host, port, dbName)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.DB().SetMaxIdleConns(maxIdle)
-	db.DB().SetMaxOpenConns(maxOpen)
+	sqldb, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sqldb.SetMaxIdleConns(maxIdle)
+	sqldb.SetMaxOpenConns(maxOpen)
+	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+	// sqldb.SetConnMaxLifetime(d)
+
+	//enable debug mode
+	db = db.Debug()
+
 	return db
 }
 
 func main() {
 	ConnectToDB()
 	fmt.Println("connect to db success!")
-	db := DB.AutoMigrate(&User{})
-	if err := db.Error; err != nil {
-		log.Fatalf("database migrate error: %v", err)
+	err := DB.AutoMigrate(&User{})
+	if err != nil {
+		log.Fatal(err)
 	}
 	fmt.Println("db migration success!")
 
-	// user := User{Name: "Tom"}
-	// db.Create(&User{Name: "Tom"})
-
-	user := User{ID: 1}
-	db.Model(&user).Update("name", "Tom2")
+	users := []User{{ID: 1, Name: "Tom111"}}
+	// DB.Create(&users)
+	DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name"}),
+	}).Create(&users)
 
 }
