@@ -31,10 +31,7 @@ stop:
 	docker-compose -f $(compose_file) -p $(service_name) stop
 
 mysql:
-	mysql -h 127.0.0.1 -P ${DB_PORT} -u${DB_ROOT_USER} -p${DB_ROOT_PASSWORD}
-
-mysqlu:
-	mysql -h 127.0.0.1 -P ${DB_PORT} -u${DB_USER} -p${DB_PASS}
+	mycli -h 127.0.0.1 -P ${DB_PORT} -u${DB_ROOT_USER} -pq
 
 login:
 	docker exec -it $(service_name) /bin/bash
