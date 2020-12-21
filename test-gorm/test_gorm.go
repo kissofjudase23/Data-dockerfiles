@@ -9,7 +9,6 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 func getOSEnv(key string) string {
@@ -42,10 +41,19 @@ func ConnectToDB() {
 // User : user table
 type User struct {
 	// mysql.interface
-	ID        uint64    `gorm:"column:id;primary_key;auto_increment"`
-	Name      string    `gorm:"column:name;type:varchar(255);unique;not null"`
-	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
-	CreatedAt time.Time `gorm:"column:created_at;type:datetime default CURRENT_TIMESTAMP"`
+	OrganizationID uint64    `gorm:"column:id;primary_key"`
+	Name           string    `gorm:"column:name;primary_key;type:varchar(255);unique;not null"`
+	UpdatedAt      time.Time `gorm:"column:updated_at;type:datetime default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
+	CreatedAt      time.Time `gorm:"column:created_at;type:datetime default CURRENT_TIMESTAMP"`
+	// CreditCard     CreditCard `gorm:"ForeignKey:UserOrganizationID,UserName;References:OrganizationID,Name;constraint:OnUpdate:CASCADE,OnDelete"`
+}
+
+type CreditCard struct {
+	// mysql.interface
+	ID                 uint64 `gorm:"column:id;primary_key;auto_increment"`
+	UserOrganizationID uint64 `gorm:"primary_key;not null"`
+	UserName           string `gorm:"primary_key;not null"`
+	User               User   `gorm:"ForeignKey:UserOrganizationID,UserName;References:OrganizationID,Name;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 // TableName : Specify the User table name
@@ -86,17 +94,25 @@ func connectDB() *gorm.DB {
 func main() {
 	ConnectToDB()
 	fmt.Println("connect to db success!")
-	err := DB.AutoMigrate(&User{})
-	if err != nil {
-		log.Fatal(err)
+	tables := []interface{}{
+		&User{},
+		&CreditCard{},
 	}
+
+	for _, table := range tables {
+		err := DB.AutoMigrate(table)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	fmt.Println("db migration success!")
 
-	users := []User{{ID: 1, Name: "Tom111"}}
-	// DB.Create(&users)
-	DB.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name"}),
-	}).Create(&users)
+	// users := []User{{ID: 1, Name: "Tom111"}}
+	// // DB.Create(&users)
+	// DB.Clauses(clause.OnConflict{
+	// 	Columns:   []clause.Column{{Name: "id"}},
+	// 	DoUpdates: clause.AssignmentColumns([]string{"name"}),
+	// }).Create(&users)
 
 }
