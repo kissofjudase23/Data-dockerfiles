@@ -4,5 +4,8 @@ ENV GO111MODULE on
 
 
 RUN ["mkdir", "-p", "/app"]
+
+RUN GO111MODULE=off go get github.com/go-delve/delve/cmd/dlv
+
 WORKDIR /app
 CMD ["/bin/bash"]
