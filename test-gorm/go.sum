@@ -7,8 +7,5 @@ github.com/jinzhu/now v1.1.1/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/
 gorm.io/driver/mysql v0.3.1 h1:yvUT7Q0I3B9EHJ67NSp6cHbVwcdDHhVUsDAUiFFxRk0=
 gorm.io/driver/mysql v0.3.1/go.mod h1:A7H1JD9dKdcjeUTpTuWKEC+E1a74qzW7/zaXqKaTbfM=
 gorm.io/gorm v0.2.19/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
-gorm.io/gorm v0.2.28 h1:/S7LExGP4cmuiYDLlaXXzRdBXnV6CQXFc4udJc6ge5o=
-gorm.io/gorm v0.2.28/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
-gorm.io/gorm v0.2.36/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
-gorm.io/gorm v0.2.38 h1:zHrkh0Xckf78itpEmA4MdjgU9HcelE3gG5FeEb+MQYM=
-gorm.io/gorm v0.2.38/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
+gorm.io/gorm v1.20.9 h1:M3aIZKXAC1PtPVu9t3WGwkBTE1le5c2telz3I/qjRNg=
+gorm.io/gorm v1.20.9/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=

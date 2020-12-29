@@ -1,14 +1,17 @@
 package main
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 func getOSEnv(key string) string {
@@ -33,30 +36,78 @@ var (
 	DB *gorm.DB
 )
 
+// PrettyFormat : pretty print for struct
+func PrettyFormat(i interface{}) {
+	s, _ := json.MarshalIndent(i, "", "\t")
+	fmt.Println(string(s))
+}
+
 // ConnectToDB : connect to database
 func ConnectToDB() {
 	DB = connectDB()
 }
 
+type SMART map[string]interface{}
+
+// Value return json value, implement driver.Valuer interface
+// save
+func (smart SMART) Value() (driver.Value, error) {
+	if len(smart) == 0 {
+		return nil, nil
+	}
+	bytes, err := json.Marshal(smart)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(bytes), err
+}
+
+// Scan scan value into Jsonb, implements sql.Scanner interface
+// receive
+func (j *SMART) Scan(value interface{}) error {
+	// null value will not call scan
+	var bytes []byte
+	switch v := value.(type) {
+	case []byte:
+		bytes = v
+	case string:
+		bytes = []byte(v)
+	default:
+		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
+	}
+
+	result := SMART{}
+	err := json.Unmarshal(bytes, &result)
+	*j = SMART(result)
+	return err
+}
+
+// GormDataType gorm common data type
+func (SMART) GormDataType() string {
+	return "smart"
+}
+
+// GormDBDataType gorm db data type
+func (SMART) GormDBDataType(db *gorm.DB, field *schema.Field) string {
+	switch db.Dialector.Name() {
+	case "sqlite":
+		return "JSON"
+	case "mysql":
+		return "JSON"
+	case "postgres":
+		return "JSONB"
+	}
+	return ""
+}
+
 // User : user table
 type User struct {
 	// mysql.interface
-	OrganizationID uint64    `gorm:"column:id;primary_key"`
-	Name           string    `gorm:"column:name;primary_key;type:varchar(255);unique;not null"`
-	UpdatedAt      time.Time `gorm:"column:updated_at;type:datetime default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
-	CreatedAt      time.Time `gorm:"column:created_at;type:datetime default CURRENT_TIMESTAMP"`
-	// CreditCard     CreditCard `gorm:"ForeignKey:UserOrganizationID,UserName;References:OrganizationID,Name;constraint:OnUpdate:CASCADE,OnDelete"`
+	Name  string `gorm:"primary_key;type:varchar(255);unique;not null"`
+	Smart SMART
 }
 
-type CreditCard struct {
-	// mysql.interface
-	ID                 uint64 `gorm:"column:id;primary_key;auto_increment"`
-	UserOrganizationID uint64 `gorm:"primary_key;not null"`
-	UserName           string `gorm:"primary_key;not null"`
-	User               User   `gorm:"ForeignKey:UserOrganizationID,UserName;References:OrganizationID,Name;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-}
-
-// TableName : Specify the User table name
+// TableName : For singular
 func (User) TableName() string {
 	return "user"
 }
@@ -96,23 +147,34 @@ func main() {
 	fmt.Println("connect to db success!")
 	tables := []interface{}{
 		&User{},
-		&CreditCard{},
 	}
-
 	for _, table := range tables {
 		err := DB.AutoMigrate(table)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-
 	fmt.Println("db migration success!")
 
-	// users := []User{{ID: 1, Name: "Tom111"}}
-	// // DB.Create(&users)
-	// DB.Clauses(clause.OnConflict{
-	// 	Columns:   []clause.Column{{Name: "id"}},
-	// 	DoUpdates: clause.AssignmentColumns([]string{"name"}),
-	// }).Create(&users)
+	var err error
+
+	// users := []User{
+	// 	{Name: "Tom1", Smart: SMART{"5": 100, "187": 100}},
+	// 	{Name: "Tom2", Smart: SMART{}},
+	// 	{Name: "Tom3"},
+	// }
+
+	// err = DB.CreateInBatches(users, 10).Error
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	var usersOut []User
+	err = DB.Find(&usersOut).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	PrettyFormat(usersOut)
 
 }

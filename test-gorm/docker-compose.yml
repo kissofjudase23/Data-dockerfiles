@@ -39,7 +39,7 @@ services:
     command: ["/bin/bash"]
 
   mysql:
-    image: mysql:8
+    image: mariadb:10.5.5
     container_name: test-gorm-mysql
     # can not change interal mysql port 3306
     ports:
